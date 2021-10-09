@@ -11,9 +11,7 @@ public class Customer extends People {
 	public static List<Customer> Customers = new LinkedList<>();
 	
 	public Customer(String name, String address, Date birthday, double bankaccount) {
-		this.name = name;
-		this.address = address;
-		this.birthday = birthday;
+		super(name, address, birthday);
 		this.bankaccount = bankaccount;
 		Customer.Customers.add(this);
 	}
