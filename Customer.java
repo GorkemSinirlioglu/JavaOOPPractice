@@ -6,9 +6,9 @@ import java.util.List;
 public class Customer extends People {
 	
 
-	public double bankaccount;
-	public List<Product> ProductsBought = new LinkedList<>();
-	public static List<Customer> Customers = new LinkedList<>();
+	private double bankaccount;
+	private List<Product> ProductsBought = new LinkedList<>();
+	private static List<Customer> Customers = new LinkedList<>();
 	
 	public Customer(String name, String address, Date birthday, double bankaccount) {
 		super(name, address, birthday);

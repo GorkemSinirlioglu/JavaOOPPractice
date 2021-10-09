@@ -7,11 +7,11 @@ import java.util.Date;
 public class OnlineShop {
 	
 
-	public static long returnSeconds(int year, int month, int date) {
+	private static long returnSeconds(int year, int month, int date) {
 	    return LocalDate.of(year, month, date).atStartOfDay(ZoneId.of("UTC")).toEpochSecond()*1000;
 	}
 	
-	public static void buyAction(Customer customer, Product product, int numToBuy) {
+	private static void buyAction(Customer customer, Product product, int numToBuy) {
 		try {
 			customer.buy(product, numToBuy);
 		} catch (CustomerNoMoneyException ex) {

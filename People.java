@@ -2,9 +2,9 @@ import java.util.Date;
 
 public class People implements Person {
 	
-	public String name;
-	public String address;
-	public Date birthday;
+	protected String name;
+	protected String address;
+	protected Date birthday;
 	
 	public People(String name, String address, Date birthday) {
 		this.name = name;
