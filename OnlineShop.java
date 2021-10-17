@@ -3,14 +3,31 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-
+/**
+ * Die OnlineShop Klasse, hier wird das Shop verwaltet
+ * @author Görkem Sinirlioglu
+ * @version 2.3.5
+ */
 public class OnlineShop {
 	
-
+	
+	/**
+	 * Konvertiert ein Jahr/Monat/Tag in die Sekunden seit Epoch
+	 * @param year
+	 * @param month
+	 * @param date
+	 * @return Sekunden seit Epoch als long
+	 */
 	private static long returnSeconds(int year, int month, int date) {
 	    return LocalDate.of(year, month, date).atStartOfDay(ZoneId.of("UTC")).toEpochSecond()*1000;
 	}
 	
+	/**
+	 * Statische Methode für eine Kaufaktion
+	 * @param customer Kunde das kauft
+	 * @param product Produkt das gekauft wird
+	 * @param numToBuy Anzahl wie viel gekauft wird
+	 */
 	private static void buyAction(Customer customer, Product product, int numToBuy) {
 		try {
 			customer.buy(product, numToBuy);
@@ -30,7 +47,7 @@ public class OnlineShop {
 
 		buyAction(c1, StandardMacbook, 2);
 		buyAction(c2, MacbookM1, 1);
-
+		
 		c1.printCustomer();
 		c2.printCustomer();
 	

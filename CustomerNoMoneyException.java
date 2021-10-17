@@ -1,4 +1,8 @@
-
+/**
+ * Die Ausnahme falls Kunde nicht genügend Geld hat um die Bestellung zu tätigen
+ * @author Görkem Sinirlioglu
+ * @version 2.3.5
+ */
 public class CustomerNoMoneyException extends Exception {
 
 	/**

@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"Customer"},{"p":"<Unnamed>","l":"CustomerNoMoneyException"},{"p":"<Unnamed>","l":"Macbook"},{"p":"<Unnamed>","l":"NotInStockException"},{"p":"<Unnamed>","l":"OnlineShop"},{"p":"<Unnamed>","l":"People"},{"p":"<Unnamed>","l":"Person"},{"p":"<Unnamed>","l":"Product"}];updateSearchResults();

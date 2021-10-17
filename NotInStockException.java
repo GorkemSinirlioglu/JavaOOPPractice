@@ -1,4 +1,8 @@
-
+/**
+ * Die Ausnahme falls die zu bestellende Menge nicht im Shop vorhanden
+ * @author Görkem Sinirlioglu
+ * @version 2.3.5
+ */
 public class NotInStockException extends Exception {
 	
 	/**
