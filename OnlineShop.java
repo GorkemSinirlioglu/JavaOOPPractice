@@ -1,9 +1,12 @@
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,6 +108,7 @@ public class OnlineShop {
 				System.out.print("Bitte ein Datem in Form DD.MM.YYYY eingeben: ");
 				String d = s.next();
 				returnDate = sdf.parse(d);
+				
 				success = true;
 			} catch (ParseException e) {
 				log.error("Falsches Datumformat: " + e.getMessage());
@@ -177,10 +181,8 @@ public class OnlineShop {
 			}
 		}
 	}
-
 	
-	public static void main(String[] args) {
-		
+	public static void onlineShop() {
 		log.info("Started");
 		
 		
@@ -215,6 +217,24 @@ public class OnlineShop {
 		
 		
 		log.info("Compile successfull");
+	}
+	
+	public static void testThings() {
+		
+//		GregorianCalendar k1 = new GregorianCalendar();
+//		k1.add(Calendar.SECOND, 29000000);
+//		System.out.println(k1.getTime());
+		
+	}
+
+	
+	public static void main(String[] args) {
+		
+//		testThings();
+		
+		onlineShop();
+		
+
 		
 	}
 
