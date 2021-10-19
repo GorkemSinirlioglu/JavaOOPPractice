@@ -43,7 +43,16 @@ public class Macbook implements Product {
 	 * Getter Methode für den Description
 	 * @return Aktueller Description (Produktname) als String
 	 */
+	@Deprecated
 	public String getDescription() {
+		return this.description;
+	}
+	
+	/**
+	 * Getter Methode für den Description
+	 * @return Aktueller Description (Produktname) als String
+	 */
+	public String toString() {
 		return this.description;
 	}
 	

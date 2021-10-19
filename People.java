@@ -1,11 +1,12 @@
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Die People Klasse, hat grundlegende Eigenschaften einer normalen Person
  * @author Görkem Sinirlioglu
  * @version 2.3.5
  */
-public class People implements Person {
+public abstract class People implements Person {
 	
 	protected String name;
 	protected String address;
@@ -46,4 +47,30 @@ public class People implements Person {
 	public Date getBirthday() {
 		return this.birthday;		
 	}
+
+	/**
+	 * Generiert hashCode mittels: address, birtdhday and name
+	 */
+	@Override
+	public int hashCode() {
+		return Objects.hash(address, birthday, name);
+	}
+	
+	/**
+	 * Vergleicht People anhand: address, birthday and name
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		People other = (People) obj;
+		return Objects.equals(address, other.address) && Objects.equals(birthday, other.birthday)
+				&& Objects.equals(name, other.name);
+	}
+
+	
 }

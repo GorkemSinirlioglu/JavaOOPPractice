@@ -1,7 +1,16 @@
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+import org.apache.logging.log4j.*;
 
 /**
  * Die OnlineShop Klasse, hier wird das Shop verwaltet
@@ -10,6 +19,11 @@ import java.util.Date;
  */
 public class OnlineShop {
 	
+	public static Logger log = LogManager.getRootLogger();
+	public static Map<Integer, Customer> customers = new HashMap<Integer, Customer>();
+	public static List<Macbook> macbooks = new LinkedList<Macbook>();
+	public static double moneyInBank = 0;
+	public static Scanner s = new Scanner(System.in);
 	
 	/**
 	 * Konvertiert ein Jahr/Monat/Tag in die Sekunden seit Epoch
@@ -22,6 +36,8 @@ public class OnlineShop {
 	    return LocalDate.of(year, month, date).atStartOfDay(ZoneId.of("UTC")).toEpochSecond()*1000;
 	}
 	
+	
+	
 	/**
 	 * Statische Methode für eine Kaufaktion
 	 * @param customer Kunde das kauft
@@ -30,27 +46,126 @@ public class OnlineShop {
 	 */
 	private static void buyAction(Customer customer, Product product, int numToBuy) {
 		try {
-			customer.buy(product, numToBuy);
+			moneyInBank += customer.buy(product, numToBuy);
 		} catch (CustomerNoMoneyException ex) {
 			System.out.println(customer.getName() + " was trying to buy " + 
 							   numToBuy + " " + product.getDescription() + 
 							   ". " + ex.getMessage());
 		}
 	}
+	
+	/**
+	 * Nutzereingabe als int in einem definierten Bereich min:max (Beide eingeschlossen)
+	 * @param min Minimalwert der Nutzereingabe
+	 * @param max Maximalwert der Nutzereingabe
+	 * @param message Aufferdorungsnachricht an Nutzer
+	 * @return Nutzereingabe als int
+	 * @throws WrongInputException falls Nutzereingabe nicht im zulässigen Bereich
+	 */
+	public static int getInt(int min, int max, String message) throws WrongInputException {
+		System.out.print(message + " (Minimum: " + min + ", Maximum: " + max + "): ");
+		int result = s.nextInt();
+		if (result < min || result > max) throw new WrongInputException("Bitte einen Wert zwischen " + min + " und " + max + " eingeben.");
+		
+		return result;
+	}
+	
+	/**
+	 * Nutzereingabe aus einer definierten Menge (keyset)
+	 * @param keyset Gültige Schlüssel
+	 * @param message Aufferdorungsnachricht an Nutzer
+	 * @return Nutzereingabe als int
+	 * @throws WrongInputException falls Nutzereingabe nicht in keyset
+	 */
+	public static int getInt(Set<Integer> keyset, String message) throws WrongInputException {
+		System.out.print(message + " (Darf eine aus der Liste sein: " + keyset.toString() + "): ");
+		int result = s.nextInt();
+		if (!keyset.contains(result)) throw new WrongInputException("Ungültiger Schlüssel.");
+		return result;
+	}
+	
+	/**
+	 * Gibt true oder false zurück je nach Nutzereingabe
+	 * @param acceptableString Akzeptiertes String
+	 * @param message Aufforderungsnachricht an Nutzer
+	 * @return boolean Bei Eingabe von acceptableString wird true ausgegeben sonst false
+	 */
+	public static boolean getBool(String acceptableString, String message) {
+		System.out.print(message + ": ");
+		String result = s.next();
+		return result.equals(acceptableString);
+	}
+	
+	/**
+	 * Listet index und Namen (aus toString() Methode) aus einer vorgegebenen Sammlung
+	 * @param liste zu listende Liste
+	 */
+	public static void listElements(Collection<?> liste) {
+		int index = 0;
+		for(Object elem : liste) {
+			System.out.println("Index: " + index++ + "\tName: " + elem.toString());
+		}
+	}
+	
+	/**
+	 * Listet Schlüssel und Name (aus toString() Methode) aus einem vorgegebenen Map
+	 * @param liste die zu listende Sammlung
+	 */
+	public static void listElements(Map<Integer, ?> liste) {
+		for(Integer i : liste.keySet()) {
+			System.out.println("Schlüssel: " + i + "\tName: " + liste.get(i).toString());
+		}
+	}
+	
+	/**
+	 * Gibt die aktuelle Situation im Shop aus
+	 */
+	public static void printShopStatus() {
+		for (Customer c : customers.values()) {
+			System.out.println(c.getDescription());
+		}
+	}
+	
+	public static void purchase() {
+		try {
+		listElements(macbooks);
+		int macbookIndex = getInt(0, macbooks.size() - 1, "Bitte Macbook auswählen, das gekauft werden soll");
+		listElements(customers);
+		int customerKey = getInt(customers.keySet(), "Bitte Kundenschlüssel eingeben, von dem Kunden, der kaufen soll");
+		int numToBuy = getInt(0, macbooks.get(macbookIndex).getAmount(), "Wie viel soll gekauft werden" );
+		
+		buyAction(customers.get(customerKey), macbooks.get(macbookIndex),numToBuy);
+		
+		} catch(WrongInputException e) {
+			log.error(e.getMessage());
+		} finally {
+			printShopStatus();
+		}
+	}
 
 	
 	public static void main(String[] args) {
+		
+		log.info("Started");
+		
 		Macbook StandardMacbook = new Macbook(950, 55);
 		Macbook MacbookM1 = new Macbook(1240, 30, "Macbook M1");
 		Customer c1 = new Customer("John Smith", "BlablaStreet 5", new Date(returnSeconds(1955, 1, 30)), 25000);
-		Customer c2 = new Customer("Tom Hirsch", "GuStr 51", new Date(returnSeconds(1975, 12, 22)), 1);
-
-		buyAction(c1, StandardMacbook, 2);
-		buyAction(c2, MacbookM1, 1);
+		Customer c2 = new Customer("Tom Hirsch", "GuStr 51", new Date(returnSeconds(1975, 12, 22)), 10000);
 		
-		c1.printCustomer();
-		c2.printCustomer();
-	
+		macbooks.add(StandardMacbook);
+		macbooks.add(MacbookM1);
+		customers.put(c1.hashCode(), c1);
+		customers.put(c2.hashCode(), c2);
+		
+		
+		do {
+			printShopStatus();
+			purchase();
+		} while (!getBool("0", "0 zum Abbrechen, Beliebige andere Eingabe zum Fortzufahren"));
+		
+		s.close();
+		log.info("Compile successfull");
 		
 	}
 
