@@ -1,4 +1,7 @@
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +24,6 @@ public class OnlineShop {
 	public static Map<Integer, Customer> customers = new HashMap<Integer, Customer>();
 	public static List<Macbook> macbooks = new LinkedList<Macbook>();
 	public static double moneyInBank = 0;
-	public static Scanner s = new Scanner(System.in);
 	
 	
 	
@@ -51,6 +53,7 @@ public class OnlineShop {
 	 * @throws WrongInputException falls Nutzereingabe nicht im zulässigen Bereich
 	 */
 	public static int getInt(int min, int max, String message) throws WrongInputException {
+		Scanner s = new Scanner(System.in);
 		System.out.print(message + " (Minimum: " + min + ", Maximum: " + max + "): ");
 		int result = s.nextInt();
 		if (result < min || result > max) throw new WrongInputException("Bitte einen Wert zwischen " + min + " und " + max + " eingeben.");
@@ -66,6 +69,7 @@ public class OnlineShop {
 	 * @throws WrongInputException falls Nutzereingabe nicht in keyset
 	 */
 	public static int getInt(Set<Integer> keyset, String message) throws WrongInputException {
+		Scanner s = new Scanner(System.in);
 		System.out.print(message + " (Darf eine aus der Liste sein: " + keyset.toString() + "): ");
 		int result = s.nextInt();
 		if (!keyset.contains(result)) throw new WrongInputException("Ungültiger Schlüssel.");
@@ -79,9 +83,47 @@ public class OnlineShop {
 	 * @return boolean Bei Eingabe von acceptableString wird true ausgegeben sonst false
 	 */
 	public static boolean getBool(String acceptableString, String message) {
+		Scanner s = new Scanner(System.in);
 		System.out.print(message + ": ");
 		String result = s.next();
 		return result.equals(acceptableString);
+	}
+	
+	/**
+	 * Liefert ein Datum zurück. Zwingt den Nutzer solange zur Eingabe, bis ein gültiger Datum ermittelt wurde.
+	 * @param message Aufforderungsnachricht an Nutzer
+	 * @return Date Datum
+	 */
+	public static Date getDate(String message) {
+		System.out.println(message + "\n------------------\n");
+		boolean success = false;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		Date returnDate = null;
+		do {
+			Scanner s = new Scanner(System.in);
+			try {
+				System.out.print("Bitte ein Datem in Form DD.MM.YYYY eingeben: ");
+				String d = s.next();
+				returnDate = sdf.parse(d);
+				success = true;
+			} catch (ParseException e) {
+				log.error("Falsches Datumformat: " + e.getMessage());
+			}
+		} while (!success);
+		
+		return returnDate;
+	}
+	
+	/**
+	 * Liest einen String vom Nutzer ein
+	 * @param message Aufforderungsnachricht
+	 * @return String aus Eingabe vom Nutzer
+	 */
+	public static String getString(String message) {
+		Scanner s = new Scanner(System.in);
+		System.out.print(message + ": ");
+		String result = s.next();
+		return result;
 	}
 	
 	/**
@@ -112,40 +154,56 @@ public class OnlineShop {
 		for (Customer c : customers.values()) {
 			System.out.println(c.getDescription());
 		}
+		System.out.println("We have " + moneyInBank + " in the account.");
 	}
 	
 	public static void purchase() {
-		try {
-		listElements(macbooks);
-		int macbookIndex = getInt(0, macbooks.size() - 1, "Bitte Macbook auswählen, das gekauft werden soll");
-		listElements(customers);
-		int customerKey = getInt(customers.keySet(), "Bitte Kundenschlüssel eingeben, von dem Kunden, der kaufen soll");
-		int numToBuy = getInt(0, macbooks.get(macbookIndex).getAmount(), "Wie viel soll gekauft werden" );
-		
-		buyAction(customers.get(customerKey), macbooks.get(macbookIndex),numToBuy);
-		
-		} catch(WrongInputException e) {
-			log.error(e.getMessage());
-		} finally {
-			printShopStatus();
+		if (macbooks.size() == 0) System.out.println("Keine Produkte im Shop!");
+		else if (customers.values().size() == 0) System.out.println("Keine Kunden!");
+		else {	
+			try {
+			listElements(macbooks);
+			int macbookIndex = getInt(0, macbooks.size() - 1, "Bitte Macbook auswählen, das gekauft werden soll");
+			listElements(customers);
+			int customerKey = getInt(customers.keySet(), "Bitte Kundenschlüssel eingeben, von dem Kunden, der kaufen soll");
+			int numToBuy = getInt(0, macbooks.get(macbookIndex).getAmount(), "Wie viel soll gekauft werden" );
+			
+			buyAction(customers.get(customerKey), macbooks.get(macbookIndex),numToBuy);
+			
+			} catch(WrongInputException e) {
+				log.error(e.getMessage());
+			} finally {
+				printShopStatus();
+			}
 		}
 	}
 
-	@SuppressWarnings ("deprecation")
+	
 	public static void main(String[] args) {
 		
 		log.info("Started");
 		
-		Macbook StandardMacbook = new Macbook(950, 55);
-		Macbook MacbookM1 = new Macbook(1240, 30, "Macbook M1");
 		
-		Customer c1 = new Customer("John Smith", "BlablaStreet 5", new Date(55, 1, 28, 0, 0, 0), 25000);
-		Customer c2 = new Customer("Tom Hirsch", "GuStr 51", new Date(75, 11, 22, 0, 0, 0), 10000);
+		while (getBool("0", "0 um Produkt zu erzeugen, Beliebige andere Eingabe zum Fortzufahren")) {
+			String name = getString("Welches Macbook-Model soll hinzugefügt werden?");
+			int stock = (int) Math.ceil(0.1 + (Math.random() * 99));
+			double price = Math.floor(Math.random() * 2500);
+			
+			Macbook m = new Macbook(price, stock, name);
+			macbooks.add(m);
+		}
 		
-		macbooks.add(StandardMacbook);
-		macbooks.add(MacbookM1);
-		customers.put(c1.hashCode(), c1);
-		customers.put(c2.hashCode(), c2);
+
+		while (getBool("0", "0 um Kunde zu erzeugen, Beliebige andere Eingabe zum Fortzufahren")) {
+			String name = getString("Kundenname eingeben");
+			String address = getString("Kundenadresse eingeben");
+			Date birth = getDate("Geburtsdatum des Kunden eingeben");
+			double bankaccount = Math.floor(Math.random() * 100000);
+			
+			Customer c = new Customer(name, address, birth, bankaccount);
+			customers.put(c.hashCode(), c);
+		}
+		
 		
 		
 		do {
@@ -153,7 +211,9 @@ public class OnlineShop {
 			purchase();
 		} while (!getBool("0", "0 zum Abbrechen, Beliebige andere Eingabe zum Fortzufahren"));
 		
-		s.close();
+		
+		
+		
 		log.info("Compile successfull");
 		
 	}
