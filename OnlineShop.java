@@ -149,7 +149,7 @@ public class OnlineShop {
 		
 		
 		do {
-			printShopStatus();
+			printShopStatus();//
 			purchase();
 		} while (!getBool("0", "0 zum Abbrechen, Beliebige andere Eingabe zum Fortzufahren"));
 		
