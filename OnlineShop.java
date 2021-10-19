@@ -1,6 +1,4 @@
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,16 +23,6 @@ public class OnlineShop {
 	public static double moneyInBank = 0;
 	public static Scanner s = new Scanner(System.in);
 	
-	/**
-	 * Konvertiert ein Jahr/Monat/Tag in die Sekunden seit Epoch
-	 * @param year
-	 * @param month
-	 * @param date
-	 * @return Sekunden seit Epoch als long
-	 */
-	private static long returnSeconds(int year, int month, int date) {
-	    return LocalDate.of(year, month, date).atStartOfDay(ZoneId.of("UTC")).toEpochSecond()*1000;
-	}
 	
 	
 	
@@ -143,15 +131,16 @@ public class OnlineShop {
 		}
 	}
 
-	
+	@SuppressWarnings ("deprecation")
 	public static void main(String[] args) {
 		
 		log.info("Started");
 		
 		Macbook StandardMacbook = new Macbook(950, 55);
 		Macbook MacbookM1 = new Macbook(1240, 30, "Macbook M1");
-		Customer c1 = new Customer("John Smith", "BlablaStreet 5", new Date(returnSeconds(1955, 1, 30)), 25000);
-		Customer c2 = new Customer("Tom Hirsch", "GuStr 51", new Date(returnSeconds(1975, 12, 22)), 10000);
+		
+		Customer c1 = new Customer("John Smith", "BlablaStreet 5", new Date(55, 1, 28, 0, 0, 0), 25000);
+		Customer c2 = new Customer("Tom Hirsch", "GuStr 51", new Date(75, 11, 22, 0, 0, 0), 10000);
 		
 		macbooks.add(StandardMacbook);
 		macbooks.add(MacbookM1);
