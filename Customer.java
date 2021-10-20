@@ -28,6 +28,13 @@ public class Customer extends People implements Comparable<Customer> {
 		this.bankaccount = bankaccount;
 		Customer.Customers.add(this);
 	}
+	/**
+	 * Schnelles erzeugen von Kunden
+	 * @param name Voller Name als String
+	 */
+	public Customer(String name) {
+		this(name, "S", new Date(94, 9, 8, 10, 52, 0), 25000.0);
+	}
 	
 	/**
 	 * Getter für das Bankkonto (Geld auf dem Konto)
